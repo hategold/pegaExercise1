@@ -18,31 +18,31 @@ public class Wawa extends AbstractFish {
 
 	public void attackFishs(List<? extends AbstractFish> fishList) {
 
-		for (int i = 0; i < fishList.size(); i++) {
-			randomAttackFish(fishList.get(i));
+		for (AbstractFish fish : fishList) {
+			if (checkAttackCondition(fish)) {
+				reduceVictimHealthDegree(fish);
+			}
 		}
 	};
 
-	private void randomAttackFish(AbstractFish fish) {
-		if (Math.random() > 0.5) {
-			attackFish(fish);
+	private boolean checkAttackCondition(AbstractFish fish) {
+		if (Math.random() > 0.5 && !(fish instanceof Wawa)) {
+			return true;
 		}
+		return false;
 	}
 
-	public void attackFish(AbstractFish fish) {//overloading 應該做的事情內容不太一樣  抽一個rule判斷要不要，包括了機率跟娃娃魚的判斷
+	public void reduceVictimHealthDegree(AbstractFish fish) {//overloading 應該做的事情內容不太一樣  抽一個rule判斷要不要，包括了機率跟娃娃魚的判斷
 
-		if (!(fish instanceof Wawa)) {
+		System.out.print(this.getName() + " attact " + fish.getName() + " ");
+		int suf = this.getSpeed() - fish.getSpeed();
+		if (suf < 1) {
 
-			System.out.print(this.getName() + " attact " + fish.getName() + " ");
-			int suf = this.getSpeed() - fish.getSpeed();
-			if (suf < 1) {
-				suf = 1;
-			}
-
-			fish.setHealthDegree(fish.getHealthDegree() - (int) suf * 3);
-			System.out.println(fish.getName() + "'s Health Degree is " + String.valueOf(fish.getHealthDegree()) + " Now!");
-
+			suf = 1;
 		}
+		fish.setHealthDegree(fish.getHealthDegree() - (int) suf * 3);
+		System.out.println(fish.getName() + "'s Health Degree is " + String.valueOf(fish.getHealthDegree()) + " Now!");
+
 	};
 
 	@Override

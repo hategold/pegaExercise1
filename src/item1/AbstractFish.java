@@ -28,17 +28,11 @@ public abstract class AbstractFish implements FishBehavior {
 		this.healthDegree = healthDegree;
 	}
 
-	/* (non-Javadoc)
-	 * @see item1.FishBehavior#askFood()
-	 */
 	@Override
 	public int askFood() {
 		return speed;
 	}
 
-	/* (non-Javadoc)
-	 * @see item1.FishBehavior#eatFood(int)
-	 */
 	@Override
 	public void eatFood(int ffood) {
 		if (ffood > 0) {
@@ -49,17 +43,11 @@ public abstract class AbstractFish implements FishBehavior {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see item1.FishBehavior#feelWater(int)
-	 */
 	@Override
 	public void feelWater(int no2) {//NO2 泉小寫 只是參數
 		setHealthDegree(healthDegree = healthDegree - no2 / 10 - 1);
 	}
 
-	/* (non-Javadoc)
-	 * @see item1.FishBehavior#swim()
-	 */
 	@Override
 	public abstract void swim();
 
@@ -78,11 +66,14 @@ public abstract class AbstractFish implements FishBehavior {
 	public void setSpeed(int speed) {
 		if (speed < 0) {
 			this.speed = 0;
-		} else if (speed > 10) {
-			this.speed = 10;
-		} else {
-			this.speed = speed;
+			return;
 		}
+		if (speed > 10) {
+			this.speed = 10;
+			return;
+		}
+		this.speed = speed;
+
 	}
 
 	public int getHealthDegree() {

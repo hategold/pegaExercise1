@@ -39,14 +39,15 @@ public class FeedFishGameText {
 
 	public void buildFishList() {
 		fishList.add(new Guppy("Guppy", 8, AbstractFish.GenderEnum.FEMALE, 100, Guppy.PatternName.COBRA));
-		fishList.add(new RedNeon("RedNeon", 3, AbstractFish.GenderEnum.MALE, 100));//fish builder 拉出來  method chain);
+		fishList.add(new RedNeon("RedNeon", 3, AbstractFish.GenderEnum.MALE, 100)); //fish builder 拉出來  method chain);
 		fishList.add(new Wawa("Wawa", 5, AbstractFish.GenderEnum.MALE, 80));
+
+		//		Fish f2 = new RedNeon("RedNeon", 3, Fish.GenderEnum.MALE, 100);//fish builder 拉出來  method chain
+		//		Wawa f3 = new Wawa("Wawa", 5, Fish.GenderEnum.MALE, 80);
+		//OLD version
 	}
 
 	public void setGame() {
-
-//		Fish f2 = new RedNeon("RedNeon", 3, Fish.GenderEnum.MALE, 100);//fish builder 拉出來  method chain
-//		Wawa f3 = new Wawa("Wawa", 5, Fish.GenderEnum.MALE, 80);
 
 		buildFishList();
 		System.out.print("放入魚隻 ");
@@ -95,7 +96,7 @@ public class FeedFishGameText {
 		}
 	}
 
-	private void checkAll(List<? extends AbstractFish> fishList) {//改list & 這邊不需要處理extend
+	private void checkGameStatus(List<? extends AbstractFish> fishList) {//改list & 這邊不需要處理extend
 		System.out.println("現在魚缸中的有害物質佔這麼多:" + aq.getNo2());
 		System.out.println("現在魚缸中的殘餘飼料有:" + ffood);
 		for (AbstractFish fish : fishList) {
@@ -111,52 +112,92 @@ public class FeedFishGameText {
 		}
 	}
 
+	private void cleanWaterFood() {
+		synchronized (this) {
+			aq.refleshWater();
+			ffood = (int) (ffood * 0.8);
+		}
+	}
+
+	private void userPutFood() {
+
+		String msg = "要加入多少飼料呢? 輸入非數字則取消動作";
+		try {
+			int userCmd = Integer.valueOf(getUserInput(msg));
+			synchronized (this) {
+				ffood += userCmd;
+			}
+			System.out.printf("投入%d顆飼料。\n", userCmd);
+
+		} catch (NumberFormatException e) {
+			System.out.println("飼料只能輸入數字，回到動作選單");
+		}
+	}//可能會想取消輸入
+
+	@SuppressWarnings("unused")
+	private static enum UserGameCmd {
+		CHECK_STATUS(1), PUT_FOOD(2), REFRESH_WATER(3), NONE(-1);
+
+		private final int value;
+
+		private UserGameCmd(int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
+			return this.value;
+		}
+
+		public static UserGameCmd valueOf(int value) {
+			switch (value) {
+				case 1:
+					return CHECK_STATUS;
+				case 2:
+					return PUT_FOOD;
+				case 3:
+					return REFRESH_WATER;
+				default:
+					return NONE;
+			}
+		}
+	}
+
+	private UserGameCmd getUserGameCmd() {
+		try {
+			String msg = "你可以進行三個動作 :1.確認魚隻/環境狀態  2.加飼料 3.換水";
+			int inputCmd = Integer.valueOf(getUserInput(msg));
+
+			return UserGameCmd.valueOf(inputCmd);
+		} catch (NumberFormatException e) {
+			return UserGameCmd.NONE;
+		}
+	}
+
 	class UserHandler implements Runnable {
 
 		@Override
 		public void run() {
-			String msg = "";
-			int userCmd = 0;
+			UserGameCmd userCmd;
 
-			while (true) {
+			while (fishList.size() > 0) {
 
-				if (fishList.size() == 0) {
-					break;//拉到while
-				}
+				userCmd = getUserGameCmd();
 
-				try {
-					msg = "你可以進行三個動作 :1.確認魚隻/環境狀態  2.加飼料 3.換水";
-					userCmd = Integer.valueOf(getUserInput(msg));
-
-					switch (userCmd) {
-						case 1://enum
-							checkAll(fishList);//命名有點怪怪
-							break;
-						case 2:
-							msg = "要加入多少飼料呢?";//學學check all
-							userCmd = Integer.valueOf(getUserInput(msg));
-							synchronized (this) {
-								ffood += userCmd;
-							}
-							System.out.printf("投入%d顆飼料。\n", userCmd);
-							break;
-						case 3:
-							synchronized (this) {
-								aq.refleshWater();
-								ffood = (int) (ffood * 0.8);
-								//FIXME aavvcc
-								//TODO
-							}
-							break;
-						default:
-							System.out.println("只能輸入數字1~3");
-							break;
-					}
-				} catch (NumberFormatException e) {
-					System.out.println("只能輸入數字1~3");//不是用飼料的狀況
+				switch (userCmd) {
+					case CHECK_STATUS://enum
+						checkGameStatus(fishList);//命名有點怪怪
+						break;
+					case PUT_FOOD:
+						userPutFood();
+						break;
+					case REFRESH_WATER:
+						cleanWaterFood();
+						break;
+					default:
+						System.out.println("只能輸入數字1~3");
+						break;
 				}
 			}
-
 		}
 	}
 
