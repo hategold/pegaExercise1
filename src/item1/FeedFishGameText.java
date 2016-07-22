@@ -19,7 +19,7 @@ import item1.AssignmentsInfo.State;
 	difficulty = Difficulty.HARD)
 public class FeedFishGameText {
 
-	private List<Fish> fishList;//宣告儘量用interface
+	private List<AbstractFish> fishList;//宣告儘量用interface
 
 	private Aquarium aq;
 
@@ -27,7 +27,7 @@ public class FeedFishGameText {
 
 	FeedFishGameText() {
 		aq = new Aquarium();
-		fishList = new ArrayList<Fish>();
+		fishList = new ArrayList<AbstractFish>();
 	}
 
 	public void startGame() {
@@ -38,9 +38,9 @@ public class FeedFishGameText {
 	}
 
 	public void buildFishList() {
-		fishList.add(new Guppy("Guppy", 8, Fish.GenderEnum.FEMALE, 100, Guppy.PatternName.COBRA));
-		fishList.add(new RedNeon("RedNeon", 3, Fish.GenderEnum.MALE, 100));//fish builder 拉出來  method chain);
-		fishList.add(new Wawa("Wawa", 5, Fish.GenderEnum.MALE, 80));
+		fishList.add(new Guppy("Guppy", 8, AbstractFish.GenderEnum.FEMALE, 100, Guppy.PatternName.COBRA));
+		fishList.add(new RedNeon("RedNeon", 3, AbstractFish.GenderEnum.MALE, 100));//fish builder 拉出來  method chain);
+		fishList.add(new Wawa("Wawa", 5, AbstractFish.GenderEnum.MALE, 80));
 	}
 
 	public void setGame() {
@@ -51,7 +51,7 @@ public class FeedFishGameText {
 		buildFishList();
 		System.out.print("放入魚隻 ");
 
-		for (Fish fish : fishList) {
+		for (AbstractFish fish : fishList) {
 			System.out.print(fish.getName() + " ");
 		}
 
@@ -95,15 +95,15 @@ public class FeedFishGameText {
 		}
 	}
 
-	private void checkAll(List<? extends Fish> fishList) {//改list & 這邊不需要處理extend
+	private void checkAll(List<? extends AbstractFish> fishList) {//改list & 這邊不需要處理extend
 		System.out.println("現在魚缸中的有害物質佔這麼多:" + aq.getNo2());
 		System.out.println("現在魚缸中的殘餘飼料有:" + ffood);
-		for (Fish fish : fishList) {
+		for (AbstractFish fish : fishList) {
 			System.out.println(fish.getName() + "的健康度是" + String.valueOf(fish.getHealthDegree()));
 		}
 	}
 
-	private boolean checkFishAlive(Fish fish) {
+	private boolean checkFishAlive(AbstractFish fish) {
 		if (fish.getHealthDegree() < 0) {
 			return false;
 		} else {
@@ -174,9 +174,9 @@ public class FeedFishGameText {
 						System.out.println("魚都死了QQ，你這個爛主人");
 						break;
 					}
-					Iterator<Fish> itFishs = fishList.iterator();//iterate list and delete member inside.
+					Iterator<AbstractFish> itFishs = fishList.iterator();//iterate list and delete member inside.
 					while (itFishs.hasNext()) {
-						Fish fish = itFishs.next();//要做的事情 拉一個method
+						AbstractFish fish = itFishs.next();//要做的事情 拉一個method
 						fish.feelWater(aq.getNo2());
 						synchronized (this) {
 							if (!checkFishAlive(fish)) {
@@ -206,7 +206,7 @@ public class FeedFishGameText {
 							if (fish instanceof Wawa) {//detail 應該用interface 比較泛用
 								synchronized (this) {
 									Wawa wawa = (Wawa) fish;//不用再拉變數
-									wawa.attackFish(fishList);
+									wawa.attackFishs(fishList);
 								}
 							} else if (fish instanceof RedNeon) {
 								RedNeon redNeon = (RedNeon) fish;

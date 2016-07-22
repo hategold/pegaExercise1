@@ -1,6 +1,5 @@
 package item1;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import item1.AssignmentsInfo.Priority;
@@ -11,26 +10,26 @@ import item1.AssignmentsInfo.State;
 	priority = Priority.MEDDIUM,
 	state = State.FINISH,
 	lastModified = "2016/7/15")
-public class Wawa extends Fish {
+public class Wawa extends AbstractFish {
 
 	Wawa(String name, int speed, GenderEnum gender, int healthDegree) {
 		super(name, speed, gender, healthDegree);
 	}
 
-	public void attackFish(List<? extends Fish> fishList) {
+	public void attackFishs(List<? extends AbstractFish> fishList) {
 
 		for (int i = 0; i < fishList.size(); i++) {
 			randomAttackFish(fishList.get(i));
 		}
 	};
 
-	private void randomAttackFish(Fish fish) {
+	private void randomAttackFish(AbstractFish fish) {
 		if (Math.random() > 0.5) {
 			attackFish(fish);
 		}
 	}
 
-	public void attackFish(Fish fish) {//overloading 應該做的事情內容不太一樣  抽一個rule判斷要不要，包括了機率跟娃娃魚的判斷
+	public void attackFish(AbstractFish fish) {//overloading 應該做的事情內容不太一樣  抽一個rule判斷要不要，包括了機率跟娃娃魚的判斷
 
 		if (!(fish instanceof Wawa)) {
 

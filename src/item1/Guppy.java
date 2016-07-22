@@ -8,7 +8,7 @@ import item1.AssignmentsInfo.State;
 	priority = Priority.LOW,
 	state = State.FINISH,
 	lastModified = "2016/7/15")
-public class Guppy extends Fish {
+public class Guppy extends AbstractFish {
 
 	public static enum PatternName {
 		TUXEDO, MOSAIC, COBRA, OTHERS

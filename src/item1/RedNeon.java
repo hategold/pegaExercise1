@@ -8,9 +8,9 @@ import item1.AssignmentsInfo.State;
 	priority = Priority.MEDDIUM,
 	state = State.FINISH,
 	lastModified = "2016/7/15")
-public class RedNeon extends Fish {
+public class RedNeon extends AbstractFish {
 
-	RedNeon(String name, int speed, Fish.GenderEnum gender, int healthDegree) {
+	RedNeon(String name, int speed, AbstractFish.GenderEnum gender, int healthDegree) {
 		super(name, speed, gender, healthDegree);
 	}
 

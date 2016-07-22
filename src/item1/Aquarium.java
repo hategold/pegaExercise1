@@ -13,19 +13,17 @@ public class Aquarium {
 	private int no2;
 
 	Aquarium() {
-
 		setNo2(0);
-
 	}
 
 	public void refleshWater() {
 		setNo2(getNo2() / 2);
 	}
 
-	public void degradeWater(int food) {//name ¦³ÂI©_§®
+	public void degradeWater(int food) {//naming variables, method meaningful
 		setNo2(getNo2() + food / 2);
 	}
-	
+
 	public int getNo2() {
 		return no2;
 	}
