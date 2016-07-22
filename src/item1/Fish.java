@@ -1,42 +1,48 @@
 package item1;
 
+import item1.AssignmentsInfo.*;
 
+@AssignmentsInfo(
+	coder = "Tim",
+	priority = Priority.HIGH,
+	state = State.FINISH,
+	lastModified = "2016/7/15")
 public abstract class Fish {
 
 	private String name;
 
-	private int speed;
+	private int speed;// lower speed => higher cool down time. so, lower speed = faster
 
-	public static enum genderEnum {
+	public static enum GenderEnum {
 		MALE, FEMALE, UNKNOWN
 	};
 
-	private genderEnum gender;
+	private GenderEnum gender;
 
-	private int hDegree;
+	private int healthDegree;//不怕他長
 
-	Fish(String name, int speed, genderEnum gender, int hDegree) {
+	Fish(String name, int speed, GenderEnum gender, int healthDegree) {
 		this.name = name;
 		this.speed = speed;
 		this.setGender(gender);
-		this.hDegree = hDegree;
+		this.healthDegree = healthDegree;
 	}
 
 	public int askFood() {
-		return (int) (speed);
+		return speed;
 	}
 
 	public void eatFood(int ffood) {
 		if (ffood > 0) {
 
-			sethDegree(hDegree + ffood * 2);
+			setHealthDegree(healthDegree + ffood * 2);
 			System.out.println(name + " eat " + String.valueOf(ffood));
 
 		}
 	}
 
-	public void feelWater(int NO2) {
-		sethDegree(hDegree = hDegree - NO2 / 10 - 1);
+	public void feelWater(int no2) {//NO2 泉小寫 只是參數
+		setHealthDegree(healthDegree = healthDegree - no2 / 10 - 1);
 	}
 
 	public abstract void swim();
@@ -49,7 +55,7 @@ public abstract class Fish {
 		this.name = name;
 	}
 
-	public float getSpeed() {
+	public int getSpeed() {
 		return speed;
 	}
 
@@ -63,23 +69,23 @@ public abstract class Fish {
 		}
 	}
 
-	public int gethDegree() {
-		return hDegree;
+	public int getHealthDegree() {
+		return healthDegree;
 	}
 
-	public void sethDegree(int hDegree) {
-		if (hDegree > 100) {
-			this.hDegree = 100;
+	public void setHealthDegree(int healthDegree) {
+		if (healthDegree > 100) {
+			this.healthDegree = 100;
 		} else {
-			this.hDegree = hDegree;
+			this.healthDegree = healthDegree;
 		}
 	}
 
-	public genderEnum getGender() {
+	public GenderEnum getGender() {
 		return gender;
 	}
 
-	public void setGender(genderEnum gender) {
+	public void setGender(GenderEnum gender) {
 		this.gender = gender;
 	}
 

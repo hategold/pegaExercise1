@@ -1,14 +1,23 @@
 package item1;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import item1.AssignmentsInfo.Priority;
+import item1.AssignmentsInfo.State;
+
+@AssignmentsInfo(
+	coder = "Tim",
+	priority = Priority.MEDDIUM,
+	state = State.FINISH,
+	lastModified = "2016/7/15")
 public class Wawa extends Fish {
 
-	Wawa(String name, int speed, genderEnum gender, int hDegree) {
-		super(name, speed, gender, hDegree);
+	Wawa(String name, int speed, GenderEnum gender, int healthDegree) {
+		super(name, speed, gender, healthDegree);
 	}
 
-	public void attackFish(ArrayList<? extends Fish> fishList) {
+	public void attackFish(List<? extends Fish> fishList) {
 
 		for (int i = 0; i < fishList.size(); i++) {
 			randomAttackFish(fishList.get(i));
@@ -21,18 +30,18 @@ public class Wawa extends Fish {
 		}
 	}
 
-	public void attackFish(Fish fish) {
+	public void attackFish(Fish fish) {//overloading 應該做的事情內容不太一樣  抽一個rule判斷要不要，包括了機率跟娃娃魚的判斷
 
 		if (!(fish instanceof Wawa)) {
 
 			System.out.print(this.getName() + " attact " + fish.getName() + " ");
-			float suf = this.getSpeed() - fish.getSpeed();
+			int suf = this.getSpeed() - fish.getSpeed();
 			if (suf < 1) {
-				suf = (float) 1;
+				suf = 1;
 			}
 
-			fish.sethDegree(fish.gethDegree() - (int) suf * 3);
-			System.out.println(fish.getName() + "'s Health Degree is " + String.valueOf(fish.gethDegree()) + " Now!");
+			fish.setHealthDegree(fish.getHealthDegree() - (int) suf * 3);
+			System.out.println(fish.getName() + "'s Health Degree is " + String.valueOf(fish.getHealthDegree()) + " Now!");
 
 		}
 	};

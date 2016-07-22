@@ -5,10 +5,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import item1.AssignmentsInfo.Difficulty;
+import item1.AssignmentsInfo.Priority;
+import item1.AssignmentsInfo.State;
+
+@AssignmentsInfo(
+	coder = "Tim",
+	priority = Priority.HIGH,
+	state = State.CHECKING,
+	lastModified = "2016/7/18",
+	difficulty = Difficulty.HARD)
 public class FeedFishGameText {
 
-	private ArrayList<Fish> fishList;
+	private List<Fish> fishList;//宣告儘量用interface
 
 	private Aquarium aq;
 
@@ -26,14 +37,18 @@ public class FeedFishGameText {
 		ft.start();
 	}
 
-	public void setGame() {
-		Guppy f1 = new Guppy("Guppy", 8, Fish.genderEnum.FEMALE, 100, Guppy.PatternName.COBRA);
-		RedNeon f2 = new RedNeon("RedNeon", 3, Fish.genderEnum.MALE, 100);
-		Wawa f3 = new Wawa("Wawa", 5, Fish.genderEnum.MALE, 80);
-		fishList.add(f1);
-		fishList.add(f2);
-		fishList.add(f3);
+	public void buildFishList() {
+		fishList.add(new Guppy("Guppy", 8, Fish.GenderEnum.FEMALE, 100, Guppy.PatternName.COBRA));
+		fishList.add(new RedNeon("RedNeon", 3, Fish.GenderEnum.MALE, 100));//fish builder 拉出來  method chain);
+		fishList.add(new Wawa("Wawa", 5, Fish.GenderEnum.MALE, 80));
+	}
 
+	public void setGame() {
+
+//		Fish f2 = new RedNeon("RedNeon", 3, Fish.GenderEnum.MALE, 100);//fish builder 拉出來  method chain
+//		Wawa f3 = new Wawa("Wawa", 5, Fish.GenderEnum.MALE, 80);
+
+		buildFishList();
 		System.out.print("放入魚隻 ");
 
 		for (Fish fish : fishList) {
@@ -43,8 +58,8 @@ public class FeedFishGameText {
 		System.out.println("遊戲開始");
 	}
 
-	public void checkNO2() {
-		System.out.println(String.valueOf(aq.getNO2()));
+	public void checkWater() {
+		System.out.println(String.valueOf(aq.getNo2()));
 	}
 
 	public String getUserInput(String msg2User) {
@@ -80,16 +95,16 @@ public class FeedFishGameText {
 		}
 	}
 
-	private void checkAll(ArrayList<? extends Fish> fishList) {
-		System.out.println("現在魚缸中的有害物質佔這麼多:" + aq.getNO2());
+	private void checkAll(List<? extends Fish> fishList) {//改list & 這邊不需要處理extend
+		System.out.println("現在魚缸中的有害物質佔這麼多:" + aq.getNo2());
 		System.out.println("現在魚缸中的殘餘飼料有:" + ffood);
 		for (Fish fish : fishList) {
-			System.out.println(fish.getName() + "的健康度是" + String.valueOf(fish.gethDegree()));
+			System.out.println(fish.getName() + "的健康度是" + String.valueOf(fish.getHealthDegree()));
 		}
 	}
 
 	private boolean checkFishAlive(Fish fish) {
-		if (fish.gethDegree() < 0) {
+		if (fish.getHealthDegree() < 0) {
 			return false;
 		} else {
 			return true;
@@ -106,32 +121,39 @@ public class FeedFishGameText {
 			while (true) {
 
 				if (fishList.size() == 0) {
-					break;
+					break;//拉到while
 				}
 
-				msg = "你可以進行三個動作 :1.確認魚隻/環境狀態  2.加飼料 3.換水";
-				userCmd = Integer.valueOf(getUserInput(msg));
+				try {
+					msg = "你可以進行三個動作 :1.確認魚隻/環境狀態  2.加飼料 3.換水";
+					userCmd = Integer.valueOf(getUserInput(msg));
 
-				switch (userCmd) {
-					case 1:
-						checkAll(fishList);
-						break;
-					case 2:
-						msg = "要加入多少飼料呢?";
-						userCmd = Integer.valueOf(getUserInput(msg));
-						synchronized (this) {
-							ffood += userCmd;
-						}
-						break;
-					case 3:
-						synchronized (this) {
-							aq.refleshWater();
-							ffood = (int) (ffood * 0.8);
-						}
-						break;
-					default:
-						System.out.println("只能輸入數字1~3");
-						break;
+					switch (userCmd) {
+						case 1://enum
+							checkAll(fishList);//命名有點怪怪
+							break;
+						case 2:
+							msg = "要加入多少飼料呢?";//學學check all
+							userCmd = Integer.valueOf(getUserInput(msg));
+							synchronized (this) {
+								ffood += userCmd;
+							}
+							System.out.printf("投入%d顆飼料。\n", userCmd);
+							break;
+						case 3:
+							synchronized (this) {
+								aq.refleshWater();
+								ffood = (int) (ffood * 0.8);
+								//FIXME aavvcc
+								//TODO
+							}
+							break;
+						default:
+							System.out.println("只能輸入數字1~3");
+							break;
+					}
+				} catch (NumberFormatException e) {
+					System.out.println("只能輸入數字1~3");//不是用飼料的狀況
 				}
 			}
 
@@ -148,14 +170,14 @@ public class FeedFishGameText {
 				Thread.sleep(1000);
 				while (timePass >= 0) {
 
-					if (fishList.size() == 0) {
+					if (fishList.size() == 0) { // fish ALL die
 						System.out.println("魚都死了QQ，你這個爛主人");
 						break;
 					}
-					Iterator<Fish> itFishs = fishList.iterator();
+					Iterator<Fish> itFishs = fishList.iterator();//iterate list and delete member inside.
 					while (itFishs.hasNext()) {
-						Fish fish = itFishs.next();
-						fish.feelWater(aq.getNO2());
+						Fish fish = itFishs.next();//要做的事情 拉一個method
+						fish.feelWater(aq.getNo2());
 						synchronized (this) {
 							if (!checkFishAlive(fish)) {
 
@@ -181,9 +203,9 @@ public class FeedFishGameText {
 								fish.eatFood(minusFood);
 							}
 
-							if (fish instanceof Wawa) {
+							if (fish instanceof Wawa) {//detail 應該用interface 比較泛用
 								synchronized (this) {
-									Wawa wawa = (Wawa) fish;
+									Wawa wawa = (Wawa) fish;//不用再拉變數
 									wawa.attackFish(fishList);
 								}
 							} else if (fish instanceof RedNeon) {
@@ -194,7 +216,7 @@ public class FeedFishGameText {
 						Thread.sleep(1000);
 					}
 
-					aq.checkFood(ffood);//update water
+					aq.degradeWater(ffood);//update water
 					timePass += 1;
 
 					Thread.sleep(1000);

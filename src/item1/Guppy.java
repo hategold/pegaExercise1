@@ -1,5 +1,13 @@
 package item1;
 
+import item1.AssignmentsInfo.Priority;
+import item1.AssignmentsInfo.State;
+
+@AssignmentsInfo(
+	coder = "Tim",
+	priority = Priority.LOW,
+	state = State.FINISH,
+	lastModified = "2016/7/15")
 public class Guppy extends Fish {
 
 	public static enum PatternName {
@@ -8,8 +16,8 @@ public class Guppy extends Fish {
 
 	private PatternName pattern;
 
-	Guppy(String name, int speed, genderEnum gender, int hDegree, PatternName pattern) {
-		super(name, speed, gender, hDegree);
+	Guppy(String name, int speed, GenderEnum gender, int healthDegree, PatternName pattern) {
+		super(name, speed, gender, healthDegree);
 		this.pattern = pattern;
 	}
 
