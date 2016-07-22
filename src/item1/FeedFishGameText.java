@@ -246,7 +246,7 @@ public class FeedFishGameText {
 
 							if (fish instanceof Wawa) {//detail 應該用interface 比較泛用
 								synchronized (this) {
-									Wawa wawa = (Wawa) fish;//不用再拉變數
+									OffensiveBehavior wawa = (OffensiveBehavior) fish;//不用再拉變數
 									wawa.attackFishs(fishList);
 								}
 							} else if (fish instanceof RedNeon) {
