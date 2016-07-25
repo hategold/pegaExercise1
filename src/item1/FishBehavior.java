@@ -4,10 +4,10 @@ import item1.AssignmentsInfo.Priority;
 import item1.AssignmentsInfo.State;
 
 @AssignmentsInfo(
-		coder = "Tim",
-		priority = Priority.HIGH,
-		state = State.FINISH,
-		lastModified = "2016/7/22")
+	coder = "Tim",
+	priority = Priority.HIGH,
+	state = State.FINISH,
+	lastModified = "2016/7/22")
 public interface FishBehavior {
 
 	int askFood();

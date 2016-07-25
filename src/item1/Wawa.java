@@ -17,7 +17,7 @@ public class Wawa extends AbstractFish implements OffensiveBehavior {
 	}
 
 	@Override
-	public void attackFishs(List<? extends AbstractFish> fishList) {
+	public void attackFishs(List<AbstractFish> fishList) {
 
 		for (AbstractFish fish : fishList) {
 			if (checkAttackCondition(fish)) {

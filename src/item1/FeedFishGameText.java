@@ -125,7 +125,7 @@ public class FeedFishGameText {
 
 	}
 
-	private void checkGameStatus(List<? extends AbstractFish> fishList) {//改list & 這邊不需要處理extend
+	private void checkGameStatus(List<AbstractFish> fishList) {//改list & 這邊不需要處理extend
 		System.out.println("現在魚缸中的有害物質佔這麼多:" + aq.getNo2());
 		System.out.println("現在魚缸中的殘餘飼料有:" + ffood);
 		for (AbstractFish fish : fishList) {
@@ -217,31 +217,12 @@ public class FeedFishGameText {
 						AbstractFish fish = itFishs.next();//要做的事情 拉一個method
 						fish.feelWater(aq.getNo2());
 						synchronized (this) {
-							if (!checkFishAlive(fish)) {
-								itFishs.remove();
-								System.out.println(fish.getName() + "屎調惹，你還有" + fishList.size() + "隻魚");
+							if (removeDeadFish(fish, itFishs)) {
 								continue;
 							}
 						}
-						if (gameRound % fish.getCooldownTime() == 0) {
-							fish.swim();
-
-							synchronized (this) {
-								int minusFood = fish.askFood();
-								if (minusFood > ffood) {
-									minusFood = ffood;
-									ffood = 0;
-								} else {
-									ffood -= minusFood;
-								}
-								fish.eatFood(minusFood);
-							}
-
-							if (fish instanceof OffensiveBehavior) {//detail 應該用interface 比較泛用
-								synchronized (this) {
-									((OffensiveBehavior) fish).attackFishs(fishList);
-								}
-							}
+						if (canFishMove(fish)) {
+							oneRoundMove(fish);
 						}
 						Thread.sleep(1000);
 					}
@@ -249,11 +230,56 @@ public class FeedFishGameText {
 					gameRound += 1;
 					Thread.sleep(1000);
 				}
-				System.out.println("魚都死了QQ，你這個爛主人");
+				endThreadMsg();
 
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+		}
+
+		private boolean removeDeadFish(AbstractFish fish, Iterator<AbstractFish> itFishs) {
+			if (!checkFishAlive(fish)) {
+				itFishs.remove();
+				System.out.println(fish.getName() + "屎調惹，你還有" + fishList.size() + "隻魚");
+				return true;
+			}
+			return false;
+		}
+
+		private void endThreadMsg() {
+			System.out.println("魚都死了QQ，你這個爛主人");
+		}
+
+		private void oneRoundMove(AbstractFish fish) {
+
+			fish.swim();
+			synchronized (this) {
+				fish.eatFood(checkFood2Eat(fish));
+			}
+
+			if (fish instanceof OffensiveBehavior) {//detail 應該用interface 比較泛用
+				synchronized (this) {
+					((OffensiveBehavior) fish).attackFishs(fishList);
+				}
+			}
+		}
+
+		private int checkFood2Eat(AbstractFish fish) {
+			int eatenFood = fish.askFood();
+			if (eatenFood > ffood) {
+				eatenFood = ffood;
+				ffood = 0;
+			} else {
+				ffood -= eatenFood;
+			}
+			return eatenFood;
+		}
+
+		private boolean canFishMove(AbstractFish fish) {
+			if (gameRound % fish.getCooldownTime() == 0) {
+				return true;
+			}
+			return false;
 		}
 
 	}
