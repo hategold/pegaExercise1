@@ -25,6 +25,34 @@ public class FeedFishGameText {
 
 	private int ffood;
 
+	@SuppressWarnings("unused")
+	private static enum UserGameCmd {
+		CHECK_STATUS(1), PUT_FOOD(2), REFRESH_WATER(3), NONE(-1);
+
+		private final int value;
+
+		private UserGameCmd(int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
+			return this.value;
+		}
+
+		public static UserGameCmd valueOf(int value) {
+			switch (value) {
+				case 1:
+					return CHECK_STATUS;
+				case 2:
+					return PUT_FOOD;
+				case 3:
+					return REFRESH_WATER;
+				default:
+					return NONE;
+			}
+		}
+	}
+
 	FeedFishGameText() {
 		aq = new Aquarium();
 		fishList = new ArrayList<AbstractFish>();
@@ -91,9 +119,10 @@ public class FeedFishGameText {
 	public void setFfood(int ffood) {
 		if (ffood < 0) {
 			this.ffood = 0;
-		} else {
-			this.ffood = ffood;
+			return;
 		}
+		this.ffood = ffood;
+
 	}
 
 	private void checkGameStatus(List<? extends AbstractFish> fishList) {//改list & 這邊不需要處理extend
@@ -107,9 +136,8 @@ public class FeedFishGameText {
 	private boolean checkFishAlive(AbstractFish fish) {
 		if (fish.getHealthDegree() < 0) {
 			return false;
-		} else {
-			return true;
 		}
+		return true;
 	}
 
 	private void cleanWaterFood() {
@@ -133,34 +161,6 @@ public class FeedFishGameText {
 			System.out.println("飼料只能輸入數字，回到動作選單");
 		}
 	}//可能會想取消輸入
-
-	@SuppressWarnings("unused")
-	private static enum UserGameCmd {
-		CHECK_STATUS(1), PUT_FOOD(2), REFRESH_WATER(3), NONE(-1);
-
-		private final int value;
-
-		private UserGameCmd(int value) {
-			this.value = value;
-		}
-
-		public int getValue() {
-			return this.value;
-		}
-
-		public static UserGameCmd valueOf(int value) {
-			switch (value) {
-				case 1:
-					return CHECK_STATUS;
-				case 2:
-					return PUT_FOOD;
-				case 3:
-					return REFRESH_WATER;
-				default:
-					return NONE;
-			}
-		}
-	}
 
 	private UserGameCmd getUserGameCmd() {
 		try {
@@ -203,34 +203,27 @@ public class FeedFishGameText {
 
 	class FishActionHandler implements Runnable {
 
-		private int timePass = 0;
+		private int gameRound = 0;
 
 		@Override
 		public void run() {
 			try {
 				Thread.sleep(1000);
-				while (timePass >= 0) {
+				while (fishList.size() > 0) {// every round
 
-					if (fishList.size() == 0) { // fish ALL die
-						System.out.println("魚都死了QQ，你這個爛主人");
-						break;
-					}
 					Iterator<AbstractFish> itFishs = fishList.iterator();//iterate list and delete member inside.
-					while (itFishs.hasNext()) {
+
+					while (itFishs.hasNext()) { //every fish
 						AbstractFish fish = itFishs.next();//要做的事情 拉一個method
 						fish.feelWater(aq.getNo2());
 						synchronized (this) {
 							if (!checkFishAlive(fish)) {
-
 								itFishs.remove();
 								System.out.println(fish.getName() + "屎調惹，你還有" + fishList.size() + "隻魚");
-								if (fishList.size() == 0) {
-									break;
-								}
 								continue;
 							}
 						}
-						if (timePass % fish.getSpeed() == 0) {
+						if (gameRound % fish.getCooldownTime() == 0) {
 							fish.swim();
 
 							synchronized (this) {
@@ -244,24 +237,19 @@ public class FeedFishGameText {
 								fish.eatFood(minusFood);
 							}
 
-							if (fish instanceof Wawa) {//detail 應該用interface 比較泛用
+							if (fish instanceof OffensiveBehavior) {//detail 應該用interface 比較泛用
 								synchronized (this) {
-									OffensiveBehavior wawa = (OffensiveBehavior) fish;//不用再拉變數
-									wawa.attackFishs(fishList);
+									((OffensiveBehavior) fish).attackFishs(fishList);
 								}
-							} else if (fish instanceof RedNeon) {
-								RedNeon redNeon = (RedNeon) fish;
-								redNeon.display();
 							}
 						}
 						Thread.sleep(1000);
 					}
-
-					aq.degradeWater(ffood);//update water
-					timePass += 1;
-
+					aq.degradeWater(ffood);//degrade water every round
+					gameRound += 1;
 					Thread.sleep(1000);
 				}
+				System.out.println("魚都死了QQ，你這個爛主人");
 
 			} catch (InterruptedException e) {
 				e.printStackTrace();

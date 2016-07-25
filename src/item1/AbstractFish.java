@@ -11,7 +11,7 @@ public abstract class AbstractFish implements FishBehavior {
 
 	private String name;
 
-	private int speed;// lower speed => higher cool down time. so, lower speed = faster
+	private int cooldownTime;	//lower cooldownTime = faster
 
 	public static enum GenderEnum {
 		MALE, FEMALE, UNKNOWN
@@ -21,16 +21,16 @@ public abstract class AbstractFish implements FishBehavior {
 
 	private int healthDegree; //ぃ┤
 
-	AbstractFish(String name, int speed, GenderEnum gender, int healthDegree) {
+	AbstractFish(String name, int cooldownTime, GenderEnum gender, int healthDegree) {
 		this.name = name;
-		this.speed = speed;
+		this.cooldownTime = cooldownTime;
 		this.setGender(gender);
 		this.healthDegree = healthDegree;
 	}
 
 	@Override
 	public int askFood() {
-		return speed;
+		return cooldownTime;
 	}
 
 	@Override
@@ -39,12 +39,11 @@ public abstract class AbstractFish implements FishBehavior {
 
 			setHealthDegree(healthDegree + ffood * 2);
 			System.out.println(name + " eat " + String.valueOf(ffood));
-
 		}
 	}
 
 	@Override
-	public void feelWater(int no2) {//NO2 瑄糶 琌把计
+	public void feelWater(int no2) {	//NO2 э糶 琌把计
 		setHealthDegree(healthDegree = healthDegree - no2 / 10 - 1);
 	}
 
@@ -59,21 +58,20 @@ public abstract class AbstractFish implements FishBehavior {
 		this.name = name;
 	}
 
-	public int getSpeed() {
-		return speed;
+	public int getCooldownTime() {
+		return cooldownTime;
 	}
 
-	public void setSpeed(int speed) {
-		if (speed < 0) {
-			this.speed = 0;
+	public void setCooldownTime(int cooldownTime) {
+		if (cooldownTime < 0) {
+			this.cooldownTime = 0;
 			return;
 		}
-		if (speed > 10) {
-			this.speed = 10;
+		if (cooldownTime > 10) {
+			this.cooldownTime = 10;
 			return;
 		}
-		this.speed = speed;
-
+		this.cooldownTime = cooldownTime;
 	}
 
 	public int getHealthDegree() {
@@ -83,9 +81,10 @@ public abstract class AbstractFish implements FishBehavior {
 	public void setHealthDegree(int healthDegree) {
 		if (healthDegree > 100) {
 			this.healthDegree = 100;
-		} else {
-			this.healthDegree = healthDegree;
+			return;
 		}
+
+		this.healthDegree = healthDegree;
 	}
 
 	public GenderEnum getGender() {
@@ -96,13 +95,9 @@ public abstract class AbstractFish implements FishBehavior {
 		this.gender = gender;
 	}
 
-	/* (non-Javadoc)
-	 * @see item1.FishBehavior#RunningOnLand()
-	 */
 	@Override
 	@Deprecated
 	public void RunningOnLand() {
 		System.out.println("琌兵辰玱穦禲ㄢ聪摸癴?");
-
 	}
 }

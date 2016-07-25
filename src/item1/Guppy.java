@@ -16,8 +16,8 @@ public class Guppy extends AbstractFish {
 
 	private PatternName pattern;
 
-	Guppy(String name, int speed, GenderEnum gender, int healthDegree, PatternName pattern) {
-		super(name, speed, gender, healthDegree);
+	Guppy(String name, int cooldownTime, GenderEnum gender, int healthDegree, PatternName pattern) {
+		super(name, cooldownTime, gender, healthDegree);
 		this.pattern = pattern;
 	}
 

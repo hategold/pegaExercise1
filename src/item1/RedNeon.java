@@ -10,8 +10,8 @@ import item1.AssignmentsInfo.State;
 	lastModified = "2016/7/15")
 public class RedNeon extends AbstractFish {
 
-	RedNeon(String name, int speed, AbstractFish.GenderEnum gender, int healthDegree) {
-		super(name, speed, gender, healthDegree);
+	RedNeon(String name, int cooldownTime, AbstractFish.GenderEnum gender, int healthDegree) {
+		super(name, cooldownTime, gender, healthDegree);
 	}
 
 	public void display() {
@@ -21,6 +21,7 @@ public class RedNeon extends AbstractFish {
 	@Override
 	public void swim() {
 		System.out.println("-----------" + getName() + " swim like a boss.");
+		display();
 	}
 
 }
