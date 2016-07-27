@@ -99,6 +99,7 @@ public class FeedFishGameText {
 		this.ffood = ffood;
 
 	}
+
 	private boolean checkFishAlive(AbstractFish fish) {
 		if (fish.getHealthDegree() < 0) {
 			return false;
@@ -140,7 +141,7 @@ public class FeedFishGameText {
 				System.out.println(fish.getName() + "的健康度是" + String.valueOf(fish.getHealthDegree()));
 			}
 		}
-		
+
 		private void cleanWaterFood() {
 			synchronized (this) {
 				aq.refleshWater();
@@ -260,6 +261,16 @@ public class FeedFishGameText {
 			if (fish instanceof OffensiveBehavior) {//detail 應該用interface 比較泛用
 				synchronized (this) {
 					((OffensiveBehavior) fish).attackFishs(fishList);
+//					((OffensiveBehavior) fish).attackFishs(fishList,
+//							f -> (f.getHealthDegree() < 50 ? Math.random() < 0.3 : Math.random() < 0.5) && !(fish.getClass().isInstance(f)), f -> {
+//								System.out.print(fish.getName() + " attact " + f.getName() + " ");
+//								int suf = fish.getCooldownTime() - f.getCooldownTime();
+//								if (suf < 1) {
+//									suf = 1;
+//								}
+//								f.setHealthDegree(f.getHealthDegree() - (int) suf * 3);
+//								System.out.println(f.getName() + "'s Health Degree is " + String.valueOf(f.getHealthDegree()) + " Now!");
+//							});
 				}
 			}
 		}

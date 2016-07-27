@@ -1,6 +1,8 @@
 package item1;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import item1.AssignmentsInfo.Priority;
 import item1.AssignmentsInfo.State;
@@ -20,18 +22,33 @@ public class Wawa extends AbstractFish implements OffensiveBehavior {
 	public void attackFishs(List<AbstractFish> fishList) {
 
 		for (AbstractFish fish : fishList) {
-			if (checkAttackCondition(fish)) {
+			if (checkAttackCondition(fish, f -> f.getHealthDegree() < 50 ? Math.random() < 0.3 : Math.random() < 0.5)) {
 				reduceVictimHealthDegree(fish);
 			}
 		}
 	};
 
 	@Override
-	public boolean checkAttackCondition(AbstractFish fish) {
-		if (Math.random() > 0.5 && !(this.getClass().isInstance(fish))) {
-			return true;
+	public void attackFishs(List<AbstractFish> fishList, Predicate<AbstractFish> attackTester, Consumer<AbstractFish> attackEffect) {
+
+		for (AbstractFish fish : fishList) {
+			if (attackTester.test(fish)) {
+				attackEffect.accept(fish);;
+			}
 		}
-		return false;
+	};
+
+	@Override
+	public boolean checkAttackCondition(AbstractFish fish, Predicate<AbstractFish> attackTester) {
+
+		return attackTester.test(fish) && !(this.getClass().isInstance(fish));
+	}
+
+	@Override
+	public boolean checkAttackCondition(AbstractFish fish) {
+
+		return (Math.random() > 0.5 && !(this.getClass().isInstance(fish)));
+
 	}
 
 	@Override
