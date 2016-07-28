@@ -10,14 +10,14 @@ import item1.AssignmentsInfo.State;
 	lastModified = "2016/7/22")
 public interface FishBehavior {
 
-	int askFood();
+	public int askFood();
 
-	void eatFood(int ffood);
+	public void eatFood(int ffood);
 
-	void feelWater(int no2);
+	public void feelWater(int no2);
 
-	void swim();
+	public void swim();
 
-	void RunningOnLand();
+	public void runningOnLand();
 
 }

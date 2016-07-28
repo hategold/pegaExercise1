@@ -20,7 +20,9 @@ public abstract class AbstractFish implements FishBehavior {
 	private GenderEnum gender;
 
 	private int healthDegree; //不怕他長
-
+	AbstractFish(String name){
+		this.name = name;
+	}
 	AbstractFish(String name, int cooldownTime, GenderEnum gender, int healthDegree) {
 		this.name = name;
 		this.cooldownTime = cooldownTime;
@@ -63,7 +65,7 @@ public abstract class AbstractFish implements FishBehavior {
 	}
 
 	public void setCooldownTime(int cooldownTime) {
-		if (cooldownTime < 0) {
+		if (cooldownTime < 0) { //部分會定義常數，用文字表示比較好統 magic number 常數另外包起物件
 			this.cooldownTime = 0;
 			return;
 		}
@@ -97,7 +99,7 @@ public abstract class AbstractFish implements FishBehavior {
 
 	@Override
 	@Deprecated
-	public void RunningOnLand() {
+	public void runningOnLand() {
 		System.out.println("是條魚卻會跑，兩棲類逆?");
 	}
 }

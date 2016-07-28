@@ -39,18 +39,18 @@ public class FeedFishGameText {
 			return this.value;
 		}
 
-		public static UserGameCmd valueOf(int value) {
-			switch (value) {
-				case 1:
-					return CHECK_STATUS;
-				case 2:
-					return PUT_FOOD;
-				case 3:
-					return REFRESH_WATER;
-				default:
-					return NONE;
-			}
-		}
+//		public static UserGameCmd valueOf(int value) {
+//			switch (value) {
+//				case 1:
+//					return CHECK_STATUS;
+//				case 2:
+//					return PUT_FOOD;
+//				case 3:
+//					return REFRESH_WATER;
+//				default:
+//					return NONE;
+//			}
+//		}
 	}
 
 	FeedFishGameText() {
@@ -169,7 +169,7 @@ public class FeedFishGameText {
 				String msg = "你可以進行三個動作 :1.確認魚隻/環境狀態  2.加飼料 3.換水";
 				int inputCmd = Integer.valueOf(getUserInput(msg));
 
-				return UserGameCmd.valueOf(inputCmd);
+				return UserGameCmd.valueOf(String.valueOf(inputCmd));
 			} catch (NumberFormatException e) {
 				return UserGameCmd.NONE;
 			}

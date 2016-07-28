@@ -22,7 +22,8 @@ public class Wawa extends AbstractFish implements OffensiveBehavior {
 	public void attackFishs(List<AbstractFish> fishList) {
 
 		for (AbstractFish fish : fishList) {
-			if (checkAttackCondition(fish, f -> f.getHealthDegree() < 50 ? Math.random() < 0.3 : Math.random() < 0.5)) {
+			if (checkAttackCondition(fish)) {
+//			if (checkAttackCondition(fish, f -> f.getHealthDegree() < 50 ? Math.random() < 0.3 : Math.random() < 0.5)) {
 				reduceVictimHealthDegree(fish);
 			}
 		}
@@ -41,7 +42,7 @@ public class Wawa extends AbstractFish implements OffensiveBehavior {
 	@Override
 	public boolean checkAttackCondition(AbstractFish fish, Predicate<AbstractFish> attackTester) {
 
-		return attackTester.test(fish) && !(this.getClass().isInstance(fish));
+		return !(this.getClass().isInstance(fish)) && attackTester.test(fish) ;
 	}
 
 	@Override
