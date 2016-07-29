@@ -27,30 +27,20 @@ public class FeedFishGameText {
 
 	@SuppressWarnings("unused")
 	private static enum UserGameCmd {
-		CHECK_STATUS(1), PUT_FOOD(2), REFRESH_WATER(3), NONE(-1);
+		CHECK_STATUS, PUT_FOOD, REFRESH_WATER, NONE;
 
-		private final int value;
-
-		private UserGameCmd(int value) {
-			this.value = value;
+		public static UserGameCmd setByInt(int inputCmd) { //原本提供的方法不是用於value的比對
+			switch (inputCmd) {
+				case 1:
+					return CHECK_STATUS;
+				case 2:
+					return PUT_FOOD;
+				case 3:
+					return REFRESH_WATER;
+				default:
+					return NONE;
+			}
 		}
-
-		public int getValue() {
-			return this.value;
-		}
-
-//		public static UserGameCmd valueOf(int value) {
-//			switch (value) {
-//				case 1:
-//					return CHECK_STATUS;
-//				case 2:
-//					return PUT_FOOD;
-//				case 3:
-//					return REFRESH_WATER;
-//				default:
-//					return NONE;
-//			}
-//		}
 	}
 
 	FeedFishGameText() {
