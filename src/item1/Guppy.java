@@ -21,6 +21,10 @@ public class Guppy extends AbstractFish {
 		this.pattern = pattern;
 	}
 
+	public Guppy(String name) {
+		super(name);
+	}
+
 	@Override
 	public void swim() {
 		System.out.println("-----------" + getName() + " swim like a angel.");
@@ -30,7 +34,8 @@ public class Guppy extends AbstractFish {
 		return pattern;
 	}
 
-	public void setPattern(PatternName pattern) {
+	public Guppy setPattern(PatternName pattern) {
 		this.pattern = pattern;
+		return this;
 	}
 }

@@ -10,7 +10,11 @@ import item1.AssignmentsInfo.State;
 	lastModified = "2016/7/15")
 public class RedNeon extends AbstractFish {
 
-	RedNeon(String name, int cooldownTime, AbstractFish.GenderEnum gender, int healthDegree) {
+	public RedNeon(String name) {
+		super(name);
+	}
+
+	public RedNeon(String name, int cooldownTime, AbstractFish.GenderEnum gender, int healthDegree) {
 		super(name, cooldownTime, gender, healthDegree);
 	}
 

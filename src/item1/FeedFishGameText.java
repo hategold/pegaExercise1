@@ -4,8 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import item1.AssignmentsInfo.Difficulty;
 import item1.AssignmentsInfo.Priority;
@@ -26,24 +29,42 @@ public class FeedFishGameText {
 	private int ffood;
 
 	@SuppressWarnings("unused")
-	private static enum UserGameCmd {
-		CHECK_STATUS, PUT_FOOD, REFRESH_WATER, NONE;
+	private static enum UserGameCmd {//TODO check
+		CHECK_STATUS(1), PUT_FOOD(2), REFRESH_WATER(3), NONE(0);
 
-		public static UserGameCmd setByInt(int inputCmd) { //原本提供的方法不是用於value的比對
-			switch (inputCmd) {
-				case 1:
-					return CHECK_STATUS;
-				case 2:
-					return PUT_FOOD;
-				case 3:
-					return REFRESH_WATER;
-				default:
-					return NONE;
+		private final int intValue;
+
+		public static final Map<Integer, UserGameCmd> cmdMap = Collections.unmodifiableMap(initializeMapping());
+
+		private UserGameCmd(int v) {
+			this.intValue = v;
+		}
+
+		public int getIntValue() {
+			return intValue;
+		}
+
+		private static Map<Integer, UserGameCmd> initializeMapping() {
+			Map<Integer, UserGameCmd> cmdMap = new HashMap<Integer, UserGameCmd>();
+			for (UserGameCmd gameCmd : UserGameCmd.values()) {
+				cmdMap.put(gameCmd.getIntValue(), gameCmd);
 			}
+			return cmdMap;
+		}
+
+		public static UserGameCmd valueOfInt(int inputCmd) { //原本提供的方法不是用於value的比對
+			if (inputCmd == CHECK_STATUS.getIntValue())
+				return CHECK_STATUS;
+			if (inputCmd == PUT_FOOD.getIntValue())
+				return PUT_FOOD;
+			if (inputCmd == REFRESH_WATER.getIntValue())
+				return REFRESH_WATER;
+
+			return NONE;
 		}
 	}
 
-	FeedFishGameText() {
+	public FeedFishGameText() {
 		aq = new Aquarium();
 		fishList = new ArrayList<AbstractFish>();
 	}
@@ -56,9 +77,10 @@ public class FeedFishGameText {
 	}
 
 	public void buildFishList() {
-		fishList.add(new Guppy("Guppy", 8, AbstractFish.GenderEnum.FEMALE, 100, Guppy.PatternName.COBRA));
-		fishList.add(new RedNeon("RedNeon", 3, AbstractFish.GenderEnum.MALE, 100));
-		fishList.add(new Wawa("Wawa", 5, AbstractFish.GenderEnum.MALE, 80));
+		fishList.add(
+				(new Guppy("Guppy")).setPattern(Guppy.PatternName.COBRA).setCooldownTime(8).setGender(AbstractFish.GenderEnum.FEMALE).setHealthDegree(100));
+		fishList.add((new RedNeon("RedNeon")).setCooldownTime(3).setGender(AbstractFish.GenderEnum.MALE).setHealthDegree(100));
+		fishList.add((new Wawa("Wawa")).setCooldownTime(5).setGender(AbstractFish.GenderEnum.MALE).setHealthDegree(80));
 
 		//		Fish f2 = new RedNeon("RedNeon", 3, Fish.GenderEnum.MALE, 100);//fish builder 拉出來  method chain
 		//		Wawa f3 = new Wawa("Wawa", 5, Fish.GenderEnum.MALE, 80);
@@ -97,7 +119,7 @@ public class FeedFishGameText {
 		return true;
 	}
 
-	class UserHandler implements Runnable {
+	private class UserHandler implements Runnable {
 
 		@Override
 		public void run() {
@@ -109,7 +131,7 @@ public class FeedFishGameText {
 
 				switch (userCmd) {
 					case CHECK_STATUS://enum
-						checkGameStatus(fishList);//命名有點怪怪
+						checkGameStatus(fishList);
 						break;
 					case PUT_FOOD:
 						userPutFood();
@@ -152,21 +174,19 @@ public class FeedFishGameText {
 			} catch (NumberFormatException e) {
 				System.out.println("飼料只能輸入數字，回到動作選單");
 			}
-		}//可能會想取消輸入
+		}
 
 		private UserGameCmd getUserGameCmd() {
 			try {
 				String msg = "你可以進行三個動作 :1.確認魚隻/環境狀態  2.加飼料 3.換水";
-				int inputCmd = Integer.valueOf(getUserInput(msg));
+				UserGameCmd gameCmd = UserGameCmd.cmdMap.get(Integer.valueOf(getUserInput(msg)));
+				if (gameCmd != null)
+					return gameCmd;
 
-				return UserGameCmd.valueOf(String.valueOf(inputCmd));
+				return UserGameCmd.NONE;
 			} catch (NumberFormatException e) {
 				return UserGameCmd.NONE;
 			}
-		}
-
-		public void checkWater() {
-			System.out.println(String.valueOf(aq.getNo2()));
 		}
 
 		public String getUserInput(String msg2User) {
@@ -192,7 +212,7 @@ public class FeedFishGameText {
 
 	}
 
-	class FishActionHandler implements Runnable {
+	private class FishActionHandler implements Runnable {
 
 		private int gameRound = 0;
 
@@ -205,7 +225,7 @@ public class FeedFishGameText {
 					Iterator<AbstractFish> itFishs = fishList.iterator();//iterate list and delete member inside.
 
 					while (itFishs.hasNext()) { //every fish
-						AbstractFish fish = itFishs.next();//要做的事情 拉一個method
+						AbstractFish fish = itFishs.next();
 						fish.feelWater(aq.getNo2());
 						synchronized (this) {
 							if (removeDeadFish(fish, itFishs)) {

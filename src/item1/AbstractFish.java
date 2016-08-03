@@ -20,10 +20,21 @@ public abstract class AbstractFish implements FishBehavior {
 	private GenderEnum gender;
 
 	private int healthDegree; //ぃ┤
-	AbstractFish(String name){
+
+	private static final int HEALTHDEGREE_UPPERBOUND = 100;
+
+	private static final int COOLDOWNTIME_LOWERBOUND = 1;
+
+	private static final int COOLDOWNTIME_UPPERBOUND = 10;
+
+	public AbstractFish() {
+	}
+
+	public AbstractFish(String name) {
 		this.name = name;
 	}
-	AbstractFish(String name, int cooldownTime, GenderEnum gender, int healthDegree) {
+
+	public AbstractFish(String name, int cooldownTime, GenderEnum gender, int healthDegree) {
 		this.name = name;
 		this.cooldownTime = cooldownTime;
 		this.setGender(gender);
@@ -56,45 +67,49 @@ public abstract class AbstractFish implements FishBehavior {
 		return name;
 	}
 
-	public void setName(String name) {
+	public AbstractFish setName(String name) {
 		this.name = name;
+		return this;
 	}
 
 	public int getCooldownTime() {
 		return cooldownTime;
 	}
 
-	public void setCooldownTime(int cooldownTime) {
-		if (cooldownTime < 0) { //场だ穦﹚竡盽计ノゅボゑ耕参 magic number 盽计癬ン
-			this.cooldownTime = 0;
-			return;
+	public AbstractFish setCooldownTime(int cooldownTime) {
+		if (cooldownTime < COOLDOWNTIME_LOWERBOUND) { //场だ穦﹚竡盽计ノゅボゑ耕参 magic number 盽计癬ン
+			this.cooldownTime = COOLDOWNTIME_LOWERBOUND;
+			return this;
 		}
-		if (cooldownTime > 10) {
-			this.cooldownTime = 10;
-			return;
+		if (cooldownTime > COOLDOWNTIME_UPPERBOUND) {
+			this.cooldownTime = COOLDOWNTIME_UPPERBOUND;
+			return this;
 		}
 		this.cooldownTime = cooldownTime;
+		return this;
 	}
 
 	public int getHealthDegree() {
 		return healthDegree;
 	}
 
-	public void setHealthDegree(int healthDegree) {
-		if (healthDegree > 100) {
-			this.healthDegree = 100;
-			return;
+	public AbstractFish setHealthDegree(int healthDegree) {
+		if (healthDegree > HEALTHDEGREE_UPPERBOUND) {
+			this.healthDegree = HEALTHDEGREE_UPPERBOUND;
+			return this;
 		}
 
 		this.healthDegree = healthDegree;
+		return this;
 	}
 
 	public GenderEnum getGender() {
 		return gender;
 	}
 
-	public void setGender(GenderEnum gender) {
+	public AbstractFish setGender(GenderEnum gender) {
 		this.gender = gender;
+		return this;
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package item1;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import item1.AssignmentsInfo.Priority;
@@ -12,37 +11,33 @@ import item1.AssignmentsInfo.State;
 	priority = Priority.MEDDIUM,
 	state = State.FINISH,
 	lastModified = "2016/7/15")
-public class Wawa extends AbstractFish implements OffensiveBehavior {
+public class Wawa extends AbstractOffensiveFish implements OffensiveBehavior {
 
-	Wawa(String name, int cooldownTime, GenderEnum gender, int healthDegree) {
+	public Wawa(String name, int cooldownTime, GenderEnum gender, int healthDegree) {
 		super(name, cooldownTime, gender, healthDegree);
+	}
+
+	public Wawa(String name) {
+		super(name);
 	}
 
 	@Override
 	public void attackFishs(List<AbstractFish> fishList) {
 
-		for (AbstractFish fish : fishList) {
-			if (checkAttackCondition(fish)) {
+		attackFishs(fishList, f -> checkAttackCondition(f, innerF -> innerF.getHealthDegree() < 50 ? Math.random() < 0.3 : Math.random() < 0.5),
+				f -> reduceVictimHealthDegree(f));
+
+//		for (AbstractFish fish : fishList) {
 //			if (checkAttackCondition(fish, f -> f.getHealthDegree() < 50 ? Math.random() < 0.3 : Math.random() < 0.5)) {
-				reduceVictimHealthDegree(fish);
-			}
-		}
-	};
-
-	@Override
-	public void attackFishs(List<AbstractFish> fishList, Predicate<AbstractFish> attackTester, Consumer<AbstractFish> attackEffect) {
-
-		for (AbstractFish fish : fishList) {
-			if (attackTester.test(fish)) {
-				attackEffect.accept(fish);;
-			}
-		}
+//				reduceVictimHealthDegree(fish);
+//			}
+//		}
 	};
 
 	@Override
 	public boolean checkAttackCondition(AbstractFish fish, Predicate<AbstractFish> attackTester) {
 
-		return !(this.getClass().isInstance(fish)) && attackTester.test(fish) ;
+		return !(this.getClass().isInstance(fish)) && attackTester.test(fish);
 	}
 
 	@Override
@@ -69,4 +64,5 @@ public class Wawa extends AbstractFish implements OffensiveBehavior {
 	public void swim() {
 		System.out.println("-----------" + getName() + " swim like a baby.");
 	}
+
 }
