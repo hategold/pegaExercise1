@@ -29,7 +29,7 @@ public class FeedFishGameText {
 	private int ffood;
 
 	@SuppressWarnings("unused")
-	private static enum UserGameCmd {//TODO check
+	private static enum UserGameCmd {
 		CHECK_STATUS(1), PUT_FOOD(2), REFRESH_WATER(3), NONE(0);
 
 		private final int intValue;
